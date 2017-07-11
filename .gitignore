@@ -1,14 +1,5 @@
 .vagrant
-<<<<<<< HEAD
-/cookbooks
 
-# Bundler
-bin/*
-.bundle/*
-
-.kitchen/
-.kitchen.local.yml
-=======
 *~
 *#
 .#*
@@ -29,4 +20,3 @@ bin/*
 Berksfile.lock
 .zero-knife.rb
 Policyfile.lock.json
->>>>>>> b85061c... Initial commit
