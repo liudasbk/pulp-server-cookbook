@@ -36,7 +36,7 @@ include_recipe 'pulp_server::admin' \
   if node['pulp_server']['install_admin_client']
 
 service 'httpd' do
-  action [:start, :enable]
+  action %i[start enable]
 end
 
 execute 'pulp-manage-db' do
@@ -65,13 +65,13 @@ template '/etc/pulp/server/server.conf' do
 end
 
 service 'pulp_workers' do
-  action [:start, :enable]
+  action %i[start enable]
 end
 
 service 'pulp_celerybeat' do
-  action [:start, :enable]
+  action %i[start enable]
 end
 
 service 'pulp_resource_manager' do
-  action [:start, :enable]
+  action %i[start enable]
 end

@@ -19,7 +19,8 @@ describe file('/etc/yum.repos.d/epel.repo') do
   its('mode') { should cmp '0644' }
 end
 
-describe command('yum repolist --disablerepo=* --enablerepo=pulp-2.11-stable') do
+describe command('yum repolist --disablerepo=*' \
+                 '--enablerepo=pulp-2.11-stable') do
   its('exit_status') { should eq 0 }
 end
 

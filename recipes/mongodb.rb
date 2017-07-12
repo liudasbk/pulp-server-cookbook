@@ -29,5 +29,5 @@ package 'mongodb-server' do
 end
 
 service 'mongod' do
-  action [:start, :enable]
+  action %i[start enable]
 end

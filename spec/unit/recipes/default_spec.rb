@@ -29,11 +29,13 @@ require 'spec_helper'
 describe 'pulp_server::default' do
   context 'When all attributes are default, on an CentOS 7.3' do
     before do
-      stub_command("sudo -u apache /usr/bin/pulp-manage-db --dry-run").and_return(false)
+      stub_command('sudo -u apache /usr/bin/pulp-manage-db --dry-run')
+        .and_return(false)
     end
 
     let(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '7.3.1611')
+      runner = ChefSpec::ServerRunner.new(platform: 'centos',
+                                          version: '7.3.1611')
       runner.converge(described_recipe)
     end
 

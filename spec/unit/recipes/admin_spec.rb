@@ -29,7 +29,8 @@ require 'spec_helper'
 describe 'pulp_server::admin' do
   context 'When all attributes are default, on an CentOS 7.3' do
     let(:chef_run) do
-      runner = ChefSpec::ServerRunner.new(platform: 'centos', version: '7.3.1611')
+      runner = ChefSpec::ServerRunner.new(platform: 'centos',
+                                          version: '7.3.1611')
       runner.converge(described_recipe)
     end
 

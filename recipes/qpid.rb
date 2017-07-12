@@ -31,5 +31,5 @@ package %w[qpid-cpp-server
            qpid-tools]
 
 service 'qpidd' do
-  action [:start, :enable]
+  action %i[start enable]
 end
