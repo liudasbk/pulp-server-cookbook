@@ -64,14 +64,8 @@ template '/etc/pulp/server/server.conf' do
   notifies :restart, 'service[httpd]', :delayed
 end
 
-service 'pulp_workers' do
-  action %i[start enable]
-end
-
-service 'pulp_celerybeat' do
-  action %i[start enable]
-end
-
-service 'pulp_resource_manager' do
-  action %i[start enable]
+%w[pulp_workers pulp_celerybeat pulp_resource_manager].each do |svc|
+  service svc do
+    action %i[start enable]
+  end
 end
