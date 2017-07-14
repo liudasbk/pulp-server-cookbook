@@ -14,7 +14,7 @@ default['pulp_server']['configure_epel'] = true
 default['pulp_server']['epel_mirrorlist'] = \
   'http://mirrors.fedoraproject.org/mirrorlist?repo=epel-7&arch=$basearch'
 default['pulp_server']['epel_gpgkey'] = \
-  'http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7'
+  'http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7'
 
 # set to false if mongodb and/or qpid is installed by external tools cookbooks
 default['pulp_server']['install_mongodb'] = true
