@@ -23,7 +23,7 @@ More information:
 - `node['pulp_server']['install_gpgkey']` - gpgkey to use in pulp server installation repository configuration. Default: `https://repos.fedorapeople.org/repos/pulp/pulp/GPG-RPM-KEY-pulp-2`.
 - `node['pulp_server']['configure_epel']` - If true, setup yum repository for EPEL, this is required for mongodb, qpid and other dependencies. Set to false if repository is configured by other means (for example epel cookbook). Default: true.
 - `node['pulp_server']['epel_mirrorlist']` - mirrorlist to use in EPEL repository configuration. Defalt: `http://mirrors.fedoraproject.org/mirrorlist?repo=epel-7&arch=$basearch`
-- `node['pulp_server']['epel_gpgkey']` - gpgkey to use in EPEL repository configuration. Default: `http://download.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7`.
+- `node['pulp_server']['epel_gpgkey']` - gpgkey to use in EPEL repository configuration. Default: `http://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-7`.
 - `node['pulp_server']['install_mongodb']` - If true, installs and configures mongodb. Repository for mongodb should be configured by other means if `node['pulp_server']['configure_epel']` is set to false. Default: true.
 - `node['pulp_server']['install_qpid']` - If true, installs and configures qpid. Repository for qpid should be configured by other means if `node['pulp_server']['configure_epel']` is set to false. Default: true.
 - `node['pulp_server']['enabled_modules']` - An array of pulp modules to install. Valid values are `rpm`, `puppet` and `docker`. Default: `%w(rpm)`
