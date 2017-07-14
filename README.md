@@ -1,5 +1,7 @@
 # pulp_server
 
+[![Build Status](https://travis-ci.org/liudasbk/pulp-server-cookbook.svg?branch=master)](https://travis-ci.org/liudasbk/pulp-server-cookbook) [![Cookbook Version](https://img.shields.io/cookbook/v/pulp_server.svg)](https://supermarket.chef.io/cookbooks/pulp_server)
+
 This cookbook installs and configures pulp server and provides pulp repository
 resources.
 
