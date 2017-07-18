@@ -81,7 +81,7 @@ default['pulp_server']['config']['data_reaping'] = {
   'task_result_history' => 3
 }
 default['pulp_server']['config']['messaging'] = {
-  'url' => 'tcp',
+  'url' => 'tcp://localhost:5672',
   'transport' => 'qpid',
   'auth_enabled' => 'true',
   'cacert' => '/etc/pki/qpid/ca/ca.crt',
@@ -91,7 +91,7 @@ default['pulp_server']['config']['messaging'] = {
   'event_notification_url' => 'qpid'
 }
 default['pulp_server']['config']['tasks'] = {
-  'broker_url' => 'qpid',
+  'broker_url' => 'qpid://localhost/',
   'celery_require_ssl' => false,
   'cacert' => '/etc/pki/pulp/qpid/ca.crt',
   'keyfile' => '/etc/pki/pulp/qpid/client.crt',
