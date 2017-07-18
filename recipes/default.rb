@@ -50,13 +50,7 @@ directory '/etc/pulp' do
   mode 0o0755
 end
 
-directory '/etc/pulp/server' do
-  owner 'root'
-  group 'root'
-  mode 0o0755
-end
-
-template '/etc/pulp/server/server.conf' do
+template '/etc/pulp/server.conf' do
   source 'server.conf.erb'
   owner 'root'
   group 'apache'
