@@ -17,6 +17,10 @@ More information:
 
 - CentOS 7
 
+### Chef
+
+- Chef 12.8+
+
 ## Attributes
 
 - `node['pulp_server']['version']` - Specifies Pulp server version. It is used to configure pulp yum repository.
@@ -38,6 +42,30 @@ More information:
 
 - `node['pulp_server']['install_admin_client']` - If true, installs and configures pulp admin client with all required extensions. Default: true.
 - `node['pulp_server']['admin']` - A hash of pulp admin client options. Valid sections are `server`, `client`, `filesystem` and `output`. For more please see [https://github.com/pulp/pulp/blob/master/client_admin/etc/pulp/admin/admin.conf](https://github.com/pulp/pulp/blob/master/client_admin/etc/pulp/admin/admin.conf)
+
+## Resources
+
+### rpm_repo
+
+The `pulp_rpm_repo` resource setups RPM repository on pulp server.
+
+#### Actions
+
+- `:create` - Creates a RPM repository
+- `:delete` - Deletes a RPM repository
+- `:sync` - Runs sync for a repository
+- `:publish` - Runs publish for a repository
+
+#### Properties
+
+#### Examples
+
+```ruby
+pulp_rpm_repo 'pulp-2.11-stable' do
+  description 'Pulp 2.11 Production Releases'
+  feed 'https://repos.fedorapeople.org/repos/pulp/pulp/stable/'
+end
+```
 
 ## Recipes
 
