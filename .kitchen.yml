@@ -18,7 +18,7 @@ platforms:
 suites:
   - name: default
     run_list:
-      - recipe[pulp_server_test::certs]
+      - recipe[pulp_server_test::repos]
       - recipe[pulp_server::default]
     verifier:
       inspec_tests:
