@@ -69,32 +69,50 @@ load_current_value do |desired_resource|
   client = HTTPClient.new(:force_basic_auth => true)
   client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
   client.set_auth nil, desired_resource.username, desired_resource.password
-  repo = JSON.parse(client.get_content(
+
+  repo = begin
+           JSON.parse(client.get_content(
              "https://#{desired_resource.host}" \
              "/pulp/api/v2/repositories/" \
-             "#{desired_resource.repo_id}/"))
+             "#{desired_resource.repo_id}/", \
+             { 'details' => true }))
+         rescue HTTPClient::BadResponseError
+           nil
+         end
+
+  Chef::Log.warn(JSON.pretty_generate(repo))
 
   if repo
+    distributor = repo['distributors'] \
+      .select { |i| i['id'] == 'yum_distributor' }.first
+
     set_value :display_name, repo['display_name']
     set_value :description, repo['description']
-    set_value :feed, repo['feed']
-    set_value :require_signature, repo['require_signature']
-    set_value :allowed_keys, repo['allowed_keys']
-    set_value :feed_ca_cert, repo['feed_ca_cert']
-    set_value :verify_feed_ssl, repo['verify_feed_ssl']
-    set_value :feed_cert, repo['feed_cert']
-    set_value :feed_key, repo['feed_key']
-    set_value :max_downloads, repo['max_downloads']
-    set_value :max_speed, repo['max_speed']
-    set_value :remove_missing, repo['remove_missing']
-    set_value :retain_old_count, repo['retain_old_count']
-    set_value :download_policy, repo['download_policy']
-    set_value :serve_http, repo['serve_http']
-    set_value :serve_https, repo['serve_https']
-    set_value :checksum_type, repo['checksum_type']
-    set_value :gpg_key, repo['generate_sqlite']
-    set_value :repoview, repo['repoview']
-    set_value :updateinfo_checksum_type, repo['updateinfo_checksum_type']
+    set_value :feed, repo['importers'].first['config']['feed']
+    set_value :require_signature, \
+      repo['importers'].first['config']['require_signature']
+    set_value :allowed_keys, repo['importers'].first['config']['allowed_keys']
+    set_value :feed_ca_cert, repo['importers'].first['config']['ssl_ca_cert']
+    set_value :verify_feed_ssl, \
+      repo['importers'].first['config']['ssl_validation']
+    set_value :feed_cert, repo['importers'].first['config']['ssl_client_cert']
+    set_value :feed_key, repo['importers'].first['config']['ssl_client_cert']
+    set_value :max_downloads, repo['importers'].first['config']['max_downloads']
+    set_value :max_speed, repo['importers'].first['config']['max_speed']
+    set_value :remove_missing, \
+      repo['importers'].first['config']['remove_missing']
+    set_value :retain_old_count, \
+      repo['importers'].first['config']['retain_old_count']
+    set_value :download_policy, \
+      repo['importers'].first['config']['download_policy']
+    set_value :serve_http, distributor['config']['http']
+    set_value :serve_https, distributor['config']['https']
+    set_value :checksum_type, distributor['config']['checksum_type']
+    set_value :gpg_key, distributor['config']['generate_sqlite']
+    set_value :repoview, distributor['config']['repoview']
+    set_value :updateinfo_checksum_type, \
+      distributor['config']['updateinfo_checksum_type']
+    set_value :skip, distributor['config']['skip']
   else
     current_value_does_not_exist!
   end
