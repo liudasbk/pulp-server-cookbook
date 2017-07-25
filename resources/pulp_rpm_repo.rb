@@ -39,19 +39,19 @@ property :feed, [String, nil], default: nil
 property :skip, [Array, nil], default: nil
 property :require_signature, [true, false, nil], default: nil
 property :allowed_keys, [Array, nil], default: nil
-property :feed_ca_cert, [String, nil], default: nil
-property :verify_feed_ssl, [true, false, nil], default: nil
-property :feed_cert, [String, nil], default: nil
-property :feed_key, [String, nil], default: nil
-property :relative_url, [String, nil], default: nil
+property :ssl_ca_cert, [String, nil], default: nil
+property :ssl_validation, [true, false, nil], default: nil
+property :ssl_client_cert, [String, nil], default: nil
+property :ssl_client_key, [String, nil], default: nil
+property :relative_url, [String, nil], default: lazy { repo_id }
 property :max_downloads, [Integer, nil], default: nil
 property :max_speed, [Integer, nil], default: nil
 property :remove_missing, [true, false, nil], default: nil
 property :retain_old_count, [Integer, nil], default: nil
 property :download_policy, [String, nil], \
   equal_to: ['immediate', 'background', 'on_demand'], default: nil
-property :serve_http, [true, false, nil], default: nil
-property :serve_https, [true, false, nil], default: nil
+property :http, [true, false, nil], default: nil
+property :https, [true, false, nil], default: nil
 property :checksum_type, [String, nil], default: nil
 property :gpg_key, [String, nil], default: nil
 property :generate_sqlite, [true, false, nil], default: nil
@@ -59,10 +59,6 @@ property :repoview, [true, false, nil], default: nil
 property :updateinfo_checksum_type, [true, false, nil], default: nil
 
 default_action :create
-
-def set_value(prop, value)
-  send prop, value if value
-end
 
 load_current_value do |desired_resource|
 
@@ -80,39 +76,22 @@ load_current_value do |desired_resource|
            nil
          end
 
-  Chef::Log.warn(JSON.pretty_generate(repo))
-
   if repo
-    distributor = repo['distributors'] \
-      .select { |i| i['id'] == 'yum_distributor' }.first
+    # basic repository config
+    config = {
+      :display_name => repo['display_name'],
+      :description => repo['description']}
 
-    set_value :display_name, repo['display_name']
-    set_value :description, repo['description']
-    set_value :feed, repo['importers'].first['config']['feed']
-    set_value :require_signature, \
-      repo['importers'].first['config']['require_signature']
-    set_value :allowed_keys, repo['importers'].first['config']['allowed_keys']
-    set_value :feed_ca_cert, repo['importers'].first['config']['ssl_ca_cert']
-    set_value :verify_feed_ssl, \
-      repo['importers'].first['config']['ssl_validation']
-    set_value :feed_cert, repo['importers'].first['config']['ssl_client_cert']
-    set_value :feed_key, repo['importers'].first['config']['ssl_client_cert']
-    set_value :max_downloads, repo['importers'].first['config']['max_downloads']
-    set_value :max_speed, repo['importers'].first['config']['max_speed']
-    set_value :remove_missing, \
-      repo['importers'].first['config']['remove_missing']
-    set_value :retain_old_count, \
-      repo['importers'].first['config']['retain_old_count']
-    set_value :download_policy, \
-      repo['importers'].first['config']['download_policy']
-    set_value :serve_http, distributor['config']['http']
-    set_value :serve_https, distributor['config']['https']
-    set_value :checksum_type, distributor['config']['checksum_type']
-    set_value :gpg_key, distributor['config']['generate_sqlite']
-    set_value :repoview, distributor['config']['repoview']
-    set_value :updateinfo_checksum_type, \
-      distributor['config']['updateinfo_checksum_type']
-    set_value :skip, distributor['config']['skip']
+    # yum importer config
+    config.merge!(repo['importers'].first['config'])
+
+    # yum_distributor config
+    config.merge!(repo['distributors'] \
+      .select { |i| i['id'] == 'yum_distributor' }.first['config'])
+
+    config.each do |k, v|
+      send k, v if self.class.properties.key?(k.to_sym)
+    end
   else
     current_value_does_not_exist!
   end
@@ -120,7 +99,15 @@ end
 
 action :create do
   converge_if_changed do
-    update_repo
+    if current_resource.nil?
+      converge_by("Creating a pulp rpm repository #{new_resource}") do
+        create_repo
+      end
+    else
+      converge_by("Updating a pulp rpm repository #{new_resource}") do
+        update_repo
+      end
+    end
   end
 end
 

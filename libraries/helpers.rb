@@ -59,6 +59,19 @@ module PulpServerCookbook
       conf.nil? ? nil : { 'yum_distributor_config' => conf }
     end
 
+    def export_distributor_config
+      conf = prop_values %i(
+        http
+        https
+        relative_url
+        generate_sqlite
+        skip
+        checksum_type
+        updateinfo_checksum_type
+      )
+      conf.nil? ? nil : { 'export_distributor_config' => conf }
+    end
+
     def repo_config
       prop_values %i(description display_name)
     end
@@ -75,17 +88,41 @@ module PulpServerCookbook
 
       res = if method == 'put'
               client.put URI.parse(uri), query.to_json
+            elsif method == 'post'
+              client.post URI.parse(uri), query.to_json
             else
               client.get URI.parse(uri)
             end
 
-      Chef::Log.warn(query)
-      Chef::Log.warn(res.body)
+      Chef::Log.warn("Request:\n#{query}")
+      Chef::Log.warn("Response:\n#{JSON.pretty_generate(res.body)}")
       JSON.parse(res.body)
     end
 
     def get_repo
       api_request "repositories/#{new_resource.repo_id}/"
+    end
+
+    def create_repo
+      api_request "repositories/", 'post', \
+        {
+          :id => new_resource.repo_id,
+          :notes => {'_repo-type' => 'rpm-repo'},
+          :importer_type_id => 'yum_importer',
+          :importer_config => importer_config,
+          :distributors => [
+            {
+              :distributor_id => 'yum_distributor',
+              :distributor_type_id => 'yum_distributor',
+              :distributor_config => distributor_configs['yum_distributor_config']
+            },
+            {
+              :distributor_id => 'export_distributor',
+              :distributor_type_id => 'export_distributor',
+              :distributor_config => export_distributor_config['export_distributor_config']
+            }
+          ]
+        }.merge(repo_config)
     end
 
     def update_repo
