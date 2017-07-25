@@ -94,8 +94,6 @@ module PulpServerCookbook
               client.get URI.parse(uri)
             end
 
-      Chef::Log.warn("Request:\n#{query}")
-      Chef::Log.warn("Response:\n#{JSON.pretty_generate(res.body)}")
       JSON.parse(res.body)
     end
 
