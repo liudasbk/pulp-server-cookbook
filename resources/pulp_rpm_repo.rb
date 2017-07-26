@@ -72,6 +72,9 @@ load_current_value do |desired_resource|
              "/pulp/api/v2/repositories/" \
              "#{desired_resource.repo_id}/", \
              { 'details' => true }))
+         rescue JSON::ParserError
+           Chef::Log.fatal("Error parsing response from pulp server")
+           raise
          rescue HTTPClient::BadResponseError
            nil
          end
@@ -112,15 +115,21 @@ action :create do
 end
 
 action :delete do
-  delete_repo
+  converge_by("Deleting a pulp rpm repository #{new_resource}") do
+    delete_repo
+  end
 end
 
 action :publish do
-  publish_repo
+  converge_by("Creating a publish task for #{new_resource}") do
+    publish_repo
+  end
 end
 
 action :sync do
-  sync_repo
+  converge_by("Creating a sync task for #{new_resource}") do
+    sync_repo
+  end
 end
 
 action_class do
