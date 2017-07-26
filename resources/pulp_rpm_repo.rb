@@ -53,8 +53,8 @@ property :remove_missing, [true, false, nil], default: nil
 property :retain_old_count, [Integer, nil], default: nil
 property :download_policy, [String, nil], \
          equal_to: %w[immediate background on_demand], default: nil
-property :http, [true, false, nil], default: nil
-property :https, [true, false, nil], default: nil
+property :http, [true, false, nil], default: true
+property :https, [true, false, nil], default: false
 property :checksum_type, [String, nil], default: nil
 property :gpg_key, [String, nil], default: nil
 property :generate_sqlite, [true, false, nil], default: nil
