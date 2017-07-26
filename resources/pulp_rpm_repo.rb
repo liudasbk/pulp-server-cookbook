@@ -29,9 +29,12 @@ require 'httpclient'
 resource_name :pulp_rpm_repo
 
 property :repo_id, String, name_property: true
-property :host, String, required: true, default: 'localhost', desired_state: false
-property :username, String, required: true, default: 'admin', desired_state: false
-property :password, String, required: true, default: 'admin', desired_state: false
+property :host, String, \
+         required: true, default: 'localhost', desired_state: false
+property :username, String, \
+         required: true, default: 'admin', desired_state: false
+property :password, String, \
+         required: true, default: 'admin', desired_state: false
 property :display_name, [String, nil], default: nil
 property :description, [String, nil], default: nil
 property :feed, [String, nil], default: nil
@@ -49,7 +52,7 @@ property :max_speed, [Integer, nil], default: nil
 property :remove_missing, [true, false, nil], default: nil
 property :retain_old_count, [Integer, nil], default: nil
 property :download_policy, [String, nil], \
-  equal_to: ['immediate', 'background', 'on_demand'], default: nil
+         equal_to: %w[immediate background on_demand], default: nil
 property :http, [true, false, nil], default: nil
 property :https, [true, false, nil], default: nil
 property :checksum_type, [String, nil], default: nil
@@ -60,30 +63,35 @@ property :updateinfo_checksum_type, [true, false, nil], default: nil
 
 default_action :create
 
-load_current_value do |desired_resource|
-
-  client = HTTPClient.new(:force_basic_auth => true)
+# rubocop:disable MethodLength
+def repo_details(res)
+  client = HTTPClient.new(force_basic_auth: true)
   client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
-  client.set_auth nil, desired_resource.username, desired_resource.password
+  client.set_auth nil, res.username, res.password
 
-  repo = begin
-           JSON.parse(client.get_content(
-             "https://#{desired_resource.host}" \
-             "/pulp/api/v2/repositories/" \
-             "#{desired_resource.repo_id}/", \
-             { 'details' => true }))
-         rescue JSON::ParserError
-           Chef::Log.fatal("Error parsing response from pulp server")
-           raise
-         rescue HTTPClient::BadResponseError
-           nil
-         end
+  begin
+    JSON.parse(
+      client.get_content(
+        "https://#{res.host}/pulp/api/v2/repositories/#{res.repo_id}/",
+        details: true
+      )
+    )
+  rescue JSON::ParserError
+    Chef::Log.fatal('Error parsing response from pulp server')
+    raise
+  rescue HTTPClient::BadResponseError
+    nil
+  end
+end
 
+load_current_value do |desired_resource|
+  repo = repo_details desired_resource
   if repo
     # basic repository config
     config = {
-      :display_name => repo['display_name'],
-      :description => repo['description']}
+      display_name: repo['display_name'],
+      description: repo['description']
+    }
 
     # yum importer config
     config.merge!(repo['importers'].first['config'])

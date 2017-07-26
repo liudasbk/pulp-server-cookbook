@@ -1,19 +1,21 @@
 
+# rubocop:disable ModuleLength
 module PulpServerCookbook
+  # Helper module implements various methods to interact with a pulp server
   module Helpers
-
     def prop_values(names)
       values = {}
       (new_resource.methods & names).each do |name|
         values[name] = new_resource.method(name).call \
-          if new_resource.method(name).call != nil
+          unless new_resource.method(name).call.nil?
       end
-      values.size > 0 ? values : nil
+      values
     end
 
+    # rubocop:disable MethodLength
     def importer_config
       # TODO: figure out how to pass vadildate parameter
-      prop_values %i(
+      prop_values %i[
         feed
         ssl_validation
         ssl_ca_cert
@@ -36,11 +38,11 @@ module PulpServerCookbook
         download_policy
         require_signature
         allowed_keys
-      )
+      ]
     end
 
-    def distributor_configs
-      conf = prop_values %i(
+    def yum_dist_config
+      prop_values %i[
         http
         https
         relative_url
@@ -55,12 +57,11 @@ module PulpServerCookbook
         updateinfo_checksum_type
         skip
         force_full
-      )
-      conf.nil? ? nil : { 'yum_distributor_config' => conf }
+      ]
     end
 
-    def export_distributor_config
-      conf = prop_values %i(
+    def export_dist_config
+      prop_values %i[
         http
         https
         relative_url
@@ -68,17 +69,17 @@ module PulpServerCookbook
         skip
         checksum_type
         updateinfo_checksum_type
-      )
-      conf.nil? ? nil : { 'export_distributor_config' => conf }
+      ]
     end
 
     def repo_config
-      prop_values %i(description display_name)
+      prop_values %i[description display_name]
     end
 
     # quick and dirty
+    # rubocop:disable AbcSize
     def api_request(path, method, query = nil)
-      client = HTTPClient.new(:force_basic_auth => true)
+      client = HTTPClient.new(force_basic_auth: true)
 
       uri = "https://#{new_resource.host}/pulp/api/v2/#{path}"
 
@@ -86,11 +87,12 @@ module PulpServerCookbook
       client.set_auth nil, new_resource.username, new_resource.password \
         if new_resource.username && new_resource.password
 
-      res = if method == 'put'
+      res = case method
+            when 'put'
               client.put URI.parse(uri), query.to_json
-            elsif method == 'post'
+            when 'post'
               client.post URI.parse(uri), query.to_json
-            elsif method == 'delete'
+            when 'delete'
               client.delete URI.parse(uri)
             else
               client.get URI.parse(uri)
@@ -100,39 +102,35 @@ module PulpServerCookbook
       JSON.parse(res.body)
     end
 
-    def get_repo
-      api_request "repositories/#{new_resource.repo_id}/"
-    end
-
     def create_repo
-      api_request "repositories/", 'post', \
-        {
-          :id => new_resource.repo_id,
-          :notes => {'_repo-type' => 'rpm-repo'},
-          :importer_type_id => 'yum_importer',
-          :importer_config => importer_config,
-          :distributors => [
-            {
-              :distributor_id => 'yum_distributor',
-              :distributor_type_id => 'yum_distributor',
-              :distributor_config => distributor_configs['yum_distributor_config']
-            },
-            {
-              :distributor_id => 'export_distributor',
-              :distributor_type_id => 'export_distributor',
-              :distributor_config => export_distributor_config['export_distributor_config']
-            }
-          ]
-        }.merge(repo_config)
+      api_request 'repositories/', 'post', \
+                  {
+                    id: new_resource.repo_id,
+                    notes: { '_repo-type' => 'rpm-repo' },
+                    importer_type_id: 'yum_importer',
+                    importer_config: importer_config,
+                    distributors: [
+                      {
+                        distributor_id: 'yum_distributor',
+                        distributor_type_id: 'yum_distributor',
+                        distributor_config: yum_dist_config
+                      },
+                      {
+                        distributor_id: 'export_distributor',
+                        distributor_type_id: 'export_distributor',
+                        distributor_config: export_dist_config
+                      }
+                    ]
+                  }.merge(repo_config)
     end
 
     def update_repo
       api_request "repositories/#{new_resource.repo_id}/", 'put', \
-        {
-          :delta => repo_config,
-          :importer_config => importer_config,
-          :distributor_configs => distributor_configs
-        }.select { |_, v| !v.nil? }
+                  delta: repo_config,
+                  importer_config: importer_config,
+                  distributor_configs: {
+                    yum_distributor_config: yum_dist_config
+                  }
     end
 
     def delete_repo
@@ -141,12 +139,12 @@ module PulpServerCookbook
 
     def sync_repo
       api_request "repositories/#{new_resource.repo_id}/actions/sync/", \
-        'post', {}
+                  'post', {}
     end
 
     def publish_repo
       api_request "repositories/#{new_resource.repo_id}/actions/publish/", \
-        'post', { :id => 'yum_distributor' }
+                  'post', id: 'yum_distributor'
     end
   end
 end
