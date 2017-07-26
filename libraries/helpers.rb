@@ -90,10 +90,13 @@ module PulpServerCookbook
               client.put URI.parse(uri), query.to_json
             elsif method == 'post'
               client.post URI.parse(uri), query.to_json
+            elsif method == 'delete'
+              client.delete URI.parse(uri)
             else
               client.get URI.parse(uri)
             end
 
+      Chef::Log.warn(JSON.pretty_generate(res.body))
       JSON.parse(res.body)
     end
 
@@ -130,6 +133,10 @@ module PulpServerCookbook
           :importer_config => importer_config,
           :distributor_configs => distributor_configs
         }.select { |_, v| !v.nil? }
+    end
+
+    def delete_repo
+      api_request "repositories/#{new_resource.repo_id}/", 'delete'
     end
   end
 end

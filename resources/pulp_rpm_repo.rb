@@ -112,6 +112,7 @@ action :create do
 end
 
 action :delete do
+  delete_repo
 end
 
 action :publish do
