@@ -119,6 +119,7 @@ action :publish do
 end
 
 action :sync do
+  sync_repo
 end
 
 action_class do

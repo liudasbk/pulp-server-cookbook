@@ -138,5 +138,10 @@ module PulpServerCookbook
     def delete_repo
       api_request "repositories/#{new_resource.repo_id}/", 'delete'
     end
+
+    def sync_repo
+      api_request "repositories/#{new_resource.repo_id}/actions/sync/", \
+        'post', {}
+    end
   end
 end
