@@ -143,5 +143,10 @@ module PulpServerCookbook
       api_request "repositories/#{new_resource.repo_id}/actions/sync/", \
         'post', {}
     end
+
+    def publish_repo
+      api_request "repositories/#{new_resource.repo_id}/actions/publish/", \
+        'post', { :id => 'yum_distributor' }
+    end
   end
 end

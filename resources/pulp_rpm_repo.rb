@@ -116,6 +116,7 @@ action :delete do
 end
 
 action :publish do
+  publish_repo
 end
 
 action :sync do
