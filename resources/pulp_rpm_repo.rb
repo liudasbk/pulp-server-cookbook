@@ -35,6 +35,8 @@ property :username, String, \
          required: true, default: 'admin', desired_state: false
 property :password, String, \
          required: true, default: 'admin', desired_state: false
+property :host_ca_cert, String, desired_state: false
+property :host_ca_verify, [true, false], default: true, desired_state: false
 property :display_name, [String, nil], default: nil
 property :description, [String, nil], default: nil
 property :feed, [String, nil], default: nil
@@ -66,7 +68,10 @@ default_action :create
 # rubocop:disable MethodLength
 def repo_details(res)
   client = HTTPClient.new(force_basic_auth: true)
-  client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE \
+    unless res.host_ca_verify
+  client.ssl_config.set_trust_ca(res.host_ca_cert) \
+    if res.host_ca_cert
   client.set_auth nil, res.username, res.password
 
   begin

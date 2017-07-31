@@ -108,7 +108,10 @@ module PulpServerCookbook
 
       uri = "https://#{new_resource.host}/pulp/api/v2/#{path}"
 
-      client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE
+      client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE \
+        unless new_resource.host_ca_verify
+      client.ssl_config.set_trust_ca(new_resource.host_ca_cert) \
+        if property_is_set? :host_ca_cert
       client.set_auth nil, new_resource.username, new_resource.password \
         if new_resource.username && new_resource.password
 
