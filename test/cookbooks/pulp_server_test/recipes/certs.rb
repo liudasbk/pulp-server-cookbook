@@ -7,7 +7,7 @@ execute 'ca_key' do
 end
 
 execute 'ca_cert' do
-  command 'openssl req -x509 -days 10 -key /etc/pki/tls/private/ca.key ' \
+  command 'openssl req -new -x509 -days 10 -key /etc/pki/tls/private/ca.key ' \
     '-subj "/C=US/ST=Texas/L=Austin/O=Initech/CN=Dummy Root CA" ' \
     '-out /etc/pki/tls/certs/ca.crt'
   not_if { ::File.exist? '/etc/pki/tls/certs/ca.crt' }
@@ -36,4 +36,12 @@ execute 'host_cert' do
     '-set_serial 01 ' \
     "-out /etc/pki/tls/certs/#{node['fqdn']}.crt"
   not_if { ::File.exist? "/etc/pki/tls/certs/#{node['fqdn']}.crt" }
+end
+
+link '/etc/pki/tls/certs/localhost.crt' do
+  to "/etc/pki/tls/certs/#{node['fqdn']}.crt"
+end
+
+link '/etc/pki/tls/private/localhost.key' do
+  to "/etc/pki/tls/private/#{node['fqdn']}.key"
 end

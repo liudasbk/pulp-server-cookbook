@@ -1,5 +1,7 @@
 
 pulp_rpm_repo 'test' do
+  host node['fqdn']
+  host_ca_cert '/etc/pki/tls/certs/ca.crt'
   display_name 'TPS repository'
   description 'This repository is to keep all TPS reports'
   feed 'https://intech.local/pulp/tps/'
@@ -8,6 +10,8 @@ pulp_rpm_repo 'test' do
 end
 
 pulp_rpm_repo 'test-1' do
+  host node['fqdn']
+  host_ca_cert '/etc/pki/tls/certs/ca.crt'
   display_name 'Param test repository'
   description 'This repository is used to test if parameters are set correctly'
   feed 'https://localhost/'
@@ -17,6 +21,8 @@ pulp_rpm_repo 'test-1' do
 end
 
 pulp_rpm_repo 'pulp-2.11-stable' do
+  host node['fqdn']
+  host_ca_cert '/etc/pki/tls/certs/ca.crt'
   display_name 'Pulp 2.11 Production Releases'
   feed 'https://repos.fedorapeople.org/repos/pulp/pulp/stable/'
   http true
@@ -25,5 +31,7 @@ pulp_rpm_repo 'pulp-2.11-stable' do
 end
 
 pulp_rpm_repo 'test' do
+  host node['fqdn']
+  host_ca_cert '/etc/pki/tls/certs/ca.crt'
   action :delete
 end
