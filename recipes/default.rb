@@ -35,13 +35,15 @@ package node['pulp_server']['server_packages']
 include_recipe 'pulp_server::admin' \
   if node['pulp_server']['install_admin_client']
 
-service 'httpd' do
-  action %i[start enable]
-end
-
 execute 'pulp-manage-db' do
   command 'sudo -u apache /usr/bin/pulp-manage-db'
   not_if 'sudo -u apache /usr/bin/pulp-manage-db --dry-run'
+  notifies :restart, 'service[httpd]', :delayed
+end
+
+execute 'pulp-gen-ca-certificate' do
+  command 'pulp-gen-ca-certificate'
+  not_if { ::File.exists? '/etc/pki/pulp/ca.crt' }
 end
 
 directory '/etc/pulp' do
@@ -62,4 +64,8 @@ end
   service svc do
     action %i[start enable]
   end
+end
+
+service 'httpd' do
+  action %i[start enable]
 end
