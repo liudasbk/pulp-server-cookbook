@@ -126,8 +126,18 @@ module PulpServerCookbook
               client.get URI.parse(uri)
             end
 
-      Chef::Log.warn(JSON.pretty_generate(res.body))
-      JSON.parse(res.body)
+      begin
+        msg = JSON.parse(res.body)
+        if msg['error']
+          Chef::Log.error("Failed running action for #{new_resource}: " \
+                          + msg['error']['description'])
+          raise msg['error']['description']
+        end
+        msg
+      rescue JSON::ParserError => e
+        Chef::Log.error("Failed parsing pulp server response:\n#{res.body}")
+        raise e.message
+      end
     end
 
     def create_repo
