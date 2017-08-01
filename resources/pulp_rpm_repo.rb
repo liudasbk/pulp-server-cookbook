@@ -57,7 +57,7 @@ property :download_policy, String, equal_to: %w[immediate background on_demand]
 property :http, [true, false], default: true
 property :https, [true, false], default: false
 property :checksum_type, String
-property :gpg_key, String
+property :gpgkey, String
 property :generate_sqlite, [true, false]
 property :repoview, [true, false]
 property :updateinfo_checksum_type, [true, false]

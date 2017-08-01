@@ -31,8 +31,7 @@ module PulpServerCookbook
     def prop_values(names)
       values = {}
       (new_resource.methods & names).each do |name|
-        values[name] = new_resource.method(name).call \
-          unless new_resource.method(name).call.nil?
+        values[name] = new_resource.method(name).call if property_is_set? name
       end
       values
     end
@@ -167,7 +166,8 @@ module PulpServerCookbook
                   delta: repo_config,
                   importer_config: importer_config,
                   distributor_configs: {
-                    yum_distributor_config: yum_dist_config
+                    yum_distributor_config: yum_dist_config,
+                    export_distributor_config: export_dist_config
                   }
     end
 

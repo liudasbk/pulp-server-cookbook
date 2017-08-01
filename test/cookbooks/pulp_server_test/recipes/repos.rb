@@ -30,7 +30,7 @@ pulp_rpm_repo 'test-1' do
   http false
   https true
   checksum_type 'sha1'
-  gpg_key 'gpgkey'
+  gpgkey 'gpgkey'
   generate_sqlite true
   repoview true
   updateinfo_checksum_type true
