@@ -106,14 +106,14 @@ module PulpServerCookbook
     def api_request(path, method, query = nil)
       client = HTTPClient.new(force_basic_auth: true)
 
-      uri = "https://#{new_resource.host}/pulp/api/v2/#{path}"
+      uri = "https://#{new_resource.pulp_server}/pulp/api/v2/#{path}"
 
       client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE \
-        unless new_resource.host_ca_verify
-      client.ssl_config.set_trust_ca(new_resource.host_ca_cert) \
-        if property_is_set? :host_ca_cert
-      client.set_auth nil, new_resource.username, new_resource.password \
-        if new_resource.username && new_resource.password
+        unless new_resource.pulp_cert_verify
+      client.ssl_config.set_trust_ca(new_resource.pulp_ca_cert) \
+        if property_is_set? :pulp_ca_cert
+      client.set_auth nil, new_resource.pulp_user, new_resource.pulp_password \
+        if new_resource.pulp_user && new_resource.pulp_password
 
       res = case method
             when 'put'
