@@ -5,7 +5,7 @@
 # The Inspec reference, with examples and extensive documentation, can be
 # found at http://inspec.io/docs/reference/resources/
 
-describe file('/etc/yum.repos.d/pulp-2.11-stable.repo') do
+describe file('/etc/yum.repos.d/pulp-2.13-stable.repo') do
   it { should be_file }
   it { should be_owned_by 'root' }
   it { should be_grouped_into 'root' }
@@ -20,7 +20,7 @@ describe file('/etc/yum.repos.d/epel.repo') do
 end
 
 describe command('yum repolist --disablerepo=*' \
-                 '--enablerepo=pulp-2.11-stable') do
+                 '--enablerepo=pulp-2.13-stable') do
   its('exit_status') { should eq 0 }
 end
 
