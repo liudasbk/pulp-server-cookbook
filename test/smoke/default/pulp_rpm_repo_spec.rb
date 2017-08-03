@@ -1,5 +1,7 @@
 
-describe command('pulp-admin rpm repo list --repo-id test-1 --details') do
+# rubocop:disable BlockLength
+describe command('pulp-admin -u admin -p admin ' \
+  'rpm repo list --repo-id test-1 --details') do
   {
     'Display Name' => 'Param test repository',
     'Description' => 'This repository is used to test if parameters are set',
@@ -29,14 +31,14 @@ describe command('pulp-admin rpm repo list --repo-id test-1 --details') do
   end
 end
 
-describe command('pulp-admin rpm repo list --repo-id test') do
+describe command('pulp-admin -u admin -p admin rpm repo list --repo-id test') do
   its('stdout') do
     should match(/The following resource\(s\) could not be found\:/)
   end
   its('exit_status') { should eq 65 }
 end
 
-describe command('pulp-admin tasks list -a ' \
+describe command('pulp-admin -u admin -p admin tasks list -a ' \
   '| awk \'BEGIN { RS=""; FS="\n" }{ print $1","$2 }\'') do
   its('stdout') do
     should match(/Operations\:\s+sync,Resources\:\s+pulp-2.11-stable/)
