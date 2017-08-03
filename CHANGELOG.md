@@ -1,6 +1,14 @@
 # pulp_server Cookbook CHANGELOG
+All notable changes to this project will be documented in this file.
 
-This file is used to list changes made in each version of the pulp_server cookbook.
+## 0.2.0 (2017-08-04)
+
+### Added
+- pulp_rpm_repo resource which allows to manage pulp repositories directly from cookbooks
+- TLS enabled tests
+
+### Changed
+- Default pulp server version to 2.13
 
 ## 0.1.2 (2017-07-18)
 

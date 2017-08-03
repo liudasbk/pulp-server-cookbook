@@ -23,7 +23,7 @@ More information:
 
 ## Attributes
 
-- `node['pulp_server']['version']` - Specifies Pulp server version. It is used to configure pulp yum repository.
+- `node['pulp_server']['version']` - Specifies Pulp server version. It is used to configure pulp yum repository. Default: `2.13`.
 - `node['pulp_server']['configure_repos']` - If true, setup yum repository for pulp server installation. Default: true.
 - `node['pulp_server']['install_baseurl']` - baseurl to use in pulp server installation repository configuration. Default: `https://repos.fedorapeople.org/repos/pulp/pulp/stable/2.11/$releasever/$basearch/`.
 - `node['pulp_server']['install_gpgkey']` - gpgkey to use in pulp server installation repository configuration. Default: `https://repos.fedorapeople.org/repos/pulp/pulp/GPG-RPM-KEY-pulp-2`.
@@ -45,25 +45,76 @@ More information:
 
 ## Resources
 
-### rpm_repo
+### pulp_rpm_repo
 
 The `pulp_rpm_repo` resource setups RPM repository on pulp server.
 
 #### Actions
 
-- `:create` - Creates a RPM repository
-- `:delete` - Deletes a RPM repository
+- `:create` - Creates and/or updates a RPM repository on pulp server
+- `:delete` - Deletes a RPM repository on pulp server
 - `:sync` - Runs sync for a repository
 - `:publish` - Runs publish for a repository
 
 #### Properties
 
+##### Pulp server
+
+The pulp server properties are used to define Pulp server on which repository action takes place.
+
+- `pulp_server` - Hostname of Pulp server. This is used to make API calls. Default: `localhost`.
+- `pulp_user` - Username to use for Pulp API. The user must have get, put and post privileges to repositories. Default: `admin`.
+- `pulp_password` - Password for user. Default: `admin`.
+- `pulp_ca_cert` - Path to CA certificate for Pulp server certificate verification. Default: `nil`.
+- `pulp_cert_verify` - If set to False certificate verification is skipped. Default: `true`.
+
+##### Repository
+
+The repository properties defines various settings of Pulp rpm repository managed by this resource. Please refer to pulp rpm plugin documentation for more details:
+ [https://docs.pulpproject.org/plugins/pulp_rpm/tech-reference/yum-plugins.html](https://docs.pulpproject.org/plugins/pulp_rpm/tech-reference/yum-plugins.html)
+
+
+- `display_name` - Short description of a repository.
+- `description` - Detailed description of a repository.
+- `feed` - URL of upstream repository to sync packages from.
+- `skip` - List of content type to skip.
+- `require_signature` - If set to `true` imported packages must be signed.
+- `allowed_keys` - Comma-separated list of allowed signature key IDs that imported packages can be signed with.
+- `ssl_ca_cert` - CA certificate for upstream repository certificate check.
+- `ssl_validation` - If set to true validates upstream repository certificate. Default: `true`.
+- `ssl_client_cert` - Client certificate to use for upstream repository.
+- `ssl_client_key` - Client certificate's key.
+- `relative_url` - Relative path at which repository is served. Default `<repository_name>`.
+- `max_downloads` - Number of thread used for repository sync.
+- `max_speed` - Maximum download speed bytes/sec.
+- `remove_missing` - If set to true, old RPMs are removed during sync.
+- `retain_old_count` - Number of old versions to keep in a repository.
+- `download_policy` - `on_demand` - downloads when client requests package, `background` - downloads after sync is completed. Default: `immediate`.
+- `http` - If set to true serves content on HTTP protocol. Default: `true`.
+- `https` - If set to true serves content on HTTPS protocol. Default: `false`.
+- `gpgkey` - GPG key used to sign RPM packages in a repository.
+- `generate_sqlite` - If set to `true` sqlite database is generated for a repository.
+- `repoview` - If set to `true` static repoview HTML files are generated for a repository.
+- `updateinfo_checksum_type` - Checksum type to use in updateinfo.xml.
+
 #### Examples
+
+Create a repository named `pulp-2.11-stable` with upstream URL set.
 
 ```ruby
 pulp_rpm_repo 'pulp-2.11-stable' do
   description 'Pulp 2.11 Production Releases'
   feed 'https://repos.fedorapeople.org/repos/pulp/pulp/stable/'
+end
+```
+
+Create a repository named `devel`, sync and publish the repository.
+
+```ruby
+pulp_rpm_repo 'devel' do
+  description 'Latest packages'
+  feed 'https://initech.local/devel'
+  action [:create, :sync, :publish]
 end
 ```
 
