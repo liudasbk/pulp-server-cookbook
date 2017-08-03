@@ -65,6 +65,7 @@ property :updateinfo_checksum_type, [true, false]
 default_action :create
 
 # rubocop:disable MethodLength
+# rubocop:disable AbcSize
 def repo_details(res)
   client = HTTPClient.new(force_basic_auth: true)
   client.ssl_config.verify_mode = OpenSSL::SSL::VERIFY_NONE \

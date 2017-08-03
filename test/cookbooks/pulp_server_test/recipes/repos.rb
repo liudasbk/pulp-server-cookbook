@@ -23,7 +23,7 @@ pulp_rpm_repo 'test-1' do
   ssl_client_key 'key'
   relative_url 'repositories/test1'
   max_downloads 10
-  max_speed 10000
+  max_speed 10_000
   remove_missing false
   retain_old_count 1
   download_policy 'immediate'

@@ -100,8 +100,9 @@ module PulpServerCookbook
       prop_values %i[description display_name]
     end
 
-    # quick and dirty
     # rubocop:disable AbcSize
+    # rubocop:disable CyclomaticComplexity
+    # rubocop:disable PerceivedComplexity
     def api_request(path, method, query = nil)
       client = HTTPClient.new(force_basic_auth: true)
 

@@ -43,7 +43,7 @@ end
 
 execute 'pulp-gen-ca-certificate' do
   command 'pulp-gen-ca-certificate'
-  not_if { ::File.exists? '/etc/pki/pulp/ca.crt' }
+  not_if { ::File.exist? '/etc/pki/pulp/ca.crt' }
 end
 
 directory '/etc/pulp' do
