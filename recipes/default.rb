@@ -36,8 +36,8 @@ include_recipe 'pulp_server::admin' \
   if node['pulp_server']['install_admin_client']
 
 execute 'pulp-manage-db' do
-  command 'su apache -p -c "/usr/bin/pulp-manage-db"'
-  not_if 'su apache -p -c "/usr/bin/pulp-manage-db --dry-run"'
+  command 'su apache -s /bin/bash -c "/usr/bin/pulp-manage-db"'
+  not_if 'su apache -s /bin/bash -c "/usr/bin/pulp-manage-db --dry-run"'
   notifies :restart, 'service[httpd]', :delayed
 end
 
