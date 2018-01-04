@@ -1,6 +1,14 @@
 # pulp_server Cookbook CHANGELOG
 All notable changes to this project will be documented in this file.
 
+## 0.2.1 (2018-01-04)
+
+### Fixed
+- managedb failure where sudo is configured with requiretty (Jerad Jacob)
+
+### Added
+- gem httpclient requirement in metadata (Jerad Jacob)
+
 ## 0.2.0 (2017-08-04)
 
 ### Added
