@@ -23,9 +23,9 @@ More information:
 
 ## Attributes
 
-- `node['pulp_server']['version']` - Specifies Pulp server version. It is used to configure pulp yum repository. Default: `2.13`.
+- `node['pulp_server']['version']` - Specifies Pulp server version. It is used to configure pulp yum repository. Default: `2.18`.
 - `node['pulp_server']['configure_repos']` - If true, setup yum repository for pulp server installation. Default: true.
-- `node['pulp_server']['install_baseurl']` - baseurl to use in pulp server installation repository configuration. Default: `https://repos.fedorapeople.org/repos/pulp/pulp/stable/2.11/$releasever/$basearch/`.
+- `node['pulp_server']['install_baseurl']` - baseurl to use in pulp server installation repository configuration. Default: `https://repos.fedorapeople.org/repos/pulp/pulp/stable/2.18/$releasever/$basearch/`.
 - `node['pulp_server']['install_gpgkey']` - gpgkey to use in pulp server installation repository configuration. Default: `https://repos.fedorapeople.org/repos/pulp/pulp/GPG-RPM-KEY-pulp-2`.
 - `node['pulp_server']['configure_epel']` - If true, setup yum repository for EPEL, this is required for mongodb, qpid and other dependencies. Set to false if repository is configured by other means (for example epel cookbook). Default: true.
 - `node['pulp_server']['epel_mirrorlist']` - mirrorlist to use in EPEL repository configuration. Defalt: `http://mirrors.fedoraproject.org/mirrorlist?repo=epel-7&arch=$basearch`

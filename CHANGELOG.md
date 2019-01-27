@@ -1,6 +1,12 @@
 # pulp_server Cookbook CHANGELOG
 All notable changes to this project will be documented in this file.
 
+## 0.3.0 (2019-01-27)
+
+### Changed
+- `python-qpid` package is replaced with `python2-qpid` (JustinasKO)
+- Default Pulp version to 2.18
+
 ## 0.2.1 (2018-01-04)
 
 ### Fixed

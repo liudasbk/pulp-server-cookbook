@@ -27,7 +27,7 @@
 package %w[qpid-cpp-server
            qpid-cpp-server-linearstore
            python-gofer-qpid
-           python-qpid
+           python2-qpid
            qpid-tools]
 
 service 'qpidd' do
