@@ -1,5 +1,5 @@
 
-default['pulp_server']['version'] = '2.13'
+default['pulp_server']['version'] = '2.18'
 
 # Pulp install repository
 default['pulp_server']['configure_repos'] = true
