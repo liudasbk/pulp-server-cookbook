@@ -39,6 +39,9 @@ execute 'pulp-manage-db' do
   command 'su apache -s /bin/bash -c "/usr/bin/pulp-manage-db"'
   not_if 'su apache -s /bin/bash -c "/usr/bin/pulp-manage-db --dry-run"'
   notifies :restart, 'service[httpd]', :delayed
+  notifies :stop, 'service[pulp_workers]', :before
+  notifies :stop, 'service[pulp_celerybeat]', :before
+  notifies :stop, 'service[pulp_resource_manager]', :before
 end
 
 execute 'pulp-gen-ca-certificate' do

@@ -1,6 +1,11 @@
 # pulp_server Cookbook CHANGELOG
 All notable changes to this project will be documented in this file.
 
+## 0.3.1 (2019-01-28)
+
+### Fixed
+- managedb failure when Pulp services are running
+
 ## 0.3.0 (2019-01-27)
 
 ### Changed
