@@ -167,8 +167,8 @@ module PulpServerCookbook
                   delta: repo_config,
                   importer_config: importer_config,
                   distributor_configs: {
-                    yum_distributor_config: yum_dist_config,
-                    export_distributor_config: export_dist_config
+                    yum_distributor: yum_dist_config,
+                    export_distributor: export_dist_config
                   }
     end
 
