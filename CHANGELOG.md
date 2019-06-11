@@ -1,6 +1,11 @@
 # pulp_server Cookbook CHANGELOG
 All notable changes to this project will be documented in this file.
 
+## 0.3.3 (2019-06-11)
+
+### Add
+- Add new properties to set proxy for repos
+
 ## 0.3.2 (2019-06-06)
 
 ### Fixed

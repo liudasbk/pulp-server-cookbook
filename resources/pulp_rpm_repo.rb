@@ -61,6 +61,10 @@ property :gpgkey, String
 property :generate_sqlite, [true, false]
 property :repoview, [true, false]
 property :updateinfo_checksum_type, [true, false]
+property :proxy_host, String
+property :proxy_port, String
+property :proxy_username, String
+property :proxy_password, String
 
 default_action :create
 
