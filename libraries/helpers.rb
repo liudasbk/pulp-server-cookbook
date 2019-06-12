@@ -46,6 +46,7 @@ module PulpServerCookbook
         ssl_client_cert
         ssl_client_key
         proxy_host
+	proxy_port
         proxy_username
         proxy_password
         basic_auth_username
